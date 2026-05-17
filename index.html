@@ -1,0 +1,2003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSI</title>
+<style>
+  body { margin:0; font-family: Arial, sans-serif; background:#f8fafd; color:#1a1a1a; }
+  a { text-decoration:none; }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 28px;
+    padding: 16px 34px;
+    background:
+      radial-gradient(circle at 12% 20%, rgba(143,207,196,0.16), transparent 26%),
+      linear-gradient(180deg, #063f3b 0%, #022f2d 100%);
+    border-top: 1px solid rgba(255,255,255,0.12);
+    border-bottom: 1px solid rgba(255,255,255,0.14);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 8px 22px rgba(2,47,45,0.12);
+  }
+  .btn-primary { background:#0e6b5c; color:#fff; }
+  .btn-secondary { background:#fff; color:#0e6b5c; border:2px solid #0e6b5c; }
+
+  header .btn-primary {
+    background: rgba(255,255,255,0.12);
+    color: #ffffff;
+    border: 2px solid rgba(201,235,229,0.75);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.14);
+    padding: 10px 18px;
+  }
+
+  header .btn-primary:hover {
+    background: rgba(255,255,255,0.20);
+    border-color: #c9ebe5;
+  }
+
+  header .btn-secondary {
+    background: #ffffff;
+    color: #063f3b;
+    border: 2px solid #ffffff;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.14);
+    padding: 10px 18px;
+  }
+
+  header .btn-secondary:hover {
+    background: #c9ebe5;
+    color: #022f2d;
+    border-color: #c9ebe5;
+  }
+
+
+  header .logo img {
+    height: 54px !important;
+    width: auto;
+    background: rgba(255,255,255,0.96);
+    border-radius: 50%;
+    padding: 4px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  }
+
+  /* Hero Section */
+  .hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(820px, 1.25fr) minmax(420px, 0.75fr);
+    align-items: center;
+    gap: 46px;
+    padding: 72px 48px 70px;
+    overflow: hidden;
+    background-color: #f4f0e4;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-color: #f4f0e4;
+    background-image:
+      linear-gradient(90deg, rgba(244,240,228,0.34) 0%, rgba(244,240,228,0.28) 52%, rgba(229,236,218,0.24) 100%),
+      url("assets/hero-background.png");
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    filter: saturate(1.18) contrast(1.08);
+  }
+
+  .hero::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: rgba(95,127,42,0.22);
+    z-index: 0;
+  }
+
+  .hero-text {
+    max-width: 980px;
+    padding-left: 8px;
+    text-align: center;
+    justify-self: center;
+    position: relative;
+    z-index: 2;
+  }
+  .hero h1 {
+    max-width: 980px;
+    font-size: 3.3rem;
+    line-height: 1.02;
+    color: #173654;
+    margin: 0 auto 24px;
+    letter-spacing: -0.035em;
+    white-space: nowrap;
+  }
+  .hero h3 {
+    font-size: 1rem;
+    letter-spacing: 0.11em;
+    color: #5f7f2a;
+    margin: 0 0 18px;
+    font-weight: 800;
+  }
+  .hero p {
+    max-width: 940px;
+    font-size: 1.16rem;
+    line-height: 1.55;
+    margin: 0 auto 20px;
+    color: #203040;
+  }
+  .hero-buttons a { margin-right:12px; }
+  .hero-image {
+    max-width: 500px;
+    justify-self: end;
+    position: relative;
+    z-index: 2;
+  }
+  .hero-image img {
+    width: 100%;
+    border-radius: 22px;
+    box-shadow: 0 22px 46px rgba(16,38,61,0.18);
+    border: 6px solid rgba(255,255,255,0.86);
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  .metrics-overlay { position:absolute; bottom:20px; left:20px; display:flex; gap:16px; }
+  .metrics-overlay div { background:rgba(255,255,255,0.92); padding:14px; border-radius:12px; text-align:center; min-width:96px; box-shadow:0 10px 20px rgba(16,38,61,0.14); }
+  .metrics-overlay div h3 { margin:0; color:#5f7f2a; font-size:1.05rem; }
+  .hero-final-line {
+    max-width: 900px;
+    font-weight: 800;
+    color: #173654 !important;
+    border-left: 5px solid #5f7f2a;
+    padding: 12px 18px;
+    margin: 24px auto 0 !important;
+    background: rgba(255,255,255,0.34);
+    border-radius: 0 14px 14px 0;
+  }
+
+  /* Solutions Section */
+  .section { padding:60px 40px; }
+  .section h2 { color:#0e6b5c; text-align:center; margin-bottom:40px; }
+  .solution-cards { display:flex; flex-wrap:wrap; justify-content:center; gap:24px; }
+  .solution-card { background:#fff; padding:20px; border-radius:12px; width:220px; box-shadow:0 8px 20px rgba(0,0,0,0.05); text-align:center; }
+  .solution-card h3 { color:#0e6b5c; margin-bottom:12px; }
+
+  /* Soil Intelligence Explainer Section */
+  .soil-intelligence-section {
+    padding-top: 54px;
+    padding-bottom: 56px;
+    position: relative;
+    overflow: hidden;
+    background-color: #fffdf6;
+    border-top: 1px solid rgba(95,127,42,0.20);
+    border-bottom: 1px solid rgba(95,127,42,0.18);
+  }
+
+  .soil-intelligence-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image:
+      linear-gradient(180deg, rgba(255,253,246,0.18) 0%, rgba(255,253,246,0.08) 45%, rgba(244,240,228,0.14) 100%),
+      url("assets/soil-intelligence-background.png");
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    opacity: 1;
+    pointer-events: none;
+  }
+
+  .soil-intelligence-section > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-kicker {
+    text-align: center;
+    color: #5f7f2a;
+    font-size: 0.86rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    margin-bottom: 12px;
+  }
+
+  .soil-intelligence-section h2 {
+    max-width: 1180px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 18px;
+    color: #173654;
+    font-size: 2.15rem;
+    line-height: 1.12;
+  }
+
+  .soil-intro {
+    max-width: 1200px;
+    margin: 0 auto 26px;
+    text-align: center;
+  }
+
+  .soil-intro p {
+    margin: 0 auto 12px;
+    max-width: 1160px;
+    color: #203040;
+    font-size: 1.03rem;
+    line-height: 1.52;
+  }
+
+  .soil-intro .soil-bridge {
+    max-width: 1120px;
+    margin-top: 18px;
+    padding: 16px 24px;
+    border-left: 5px solid #5f7f2a;
+    background: rgba(229,236,218,0.74);
+    border-radius: 0 16px 16px 0;
+    color: #173654;
+    font-weight: 800;
+    box-shadow: 0 10px 22px rgba(16,38,61,0.04);
+  }
+
+  .soil-card-grid {
+    max-width: 1380px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .soil-card {
+    background: rgba(255,255,255,0.94);
+    border: 1px solid rgba(215,222,204,0.95);
+    border-radius: 16px;
+    padding: 18px 14px 16px;
+    box-shadow: 0 14px 28px rgba(16,38,61,0.08);
+    min-height: 230px;
+    backdrop-filter: blur(2px);
+  }
+
+  .soil-card:nth-child(1) { border-top: 5px solid #5f7f2a; }
+  .soil-card:nth-child(2) { border-top: 5px solid #8a5322; }
+  .soil-card:nth-child(3) { border-top: 5px solid #173654; }
+  .soil-card:nth-child(4) { border-top: 5px solid #7ea63a; }
+  .soil-card:nth-child(5) { border-top: 5px solid #c8a13b; }
+  .soil-card:nth-child(6) { border-top: 5px solid #5f7f2a; }
+  .soil-card:nth-child(7) {
+    border-top: 5px solid #173654;
+  }
+
+  .soil-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    margin-bottom: 12px;
+    background: rgba(229,236,218,0.94);
+    color: #173654;
+    font-size: 1.15rem;
+    font-weight: 800;
+    box-shadow: inset 0 0 0 1px rgba(95,127,42,0.08);
+  }
+
+  .soil-card h3 {
+    margin: 0 0 9px;
+    color: #173654;
+    font-size: 1rem;
+    line-height: 1.18;
+  }
+
+  .soil-card p {
+    margin: 0;
+    color: #61707d;
+    line-height: 1.42;
+    font-size: 0.88rem;
+  }
+
+  @media (max-width: 1180px) {
+    .soil-card-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 860px) {
+    .soil-card-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 640px) {
+    .soil-card-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .soil-intelligence-section h2 {
+      font-size: 1.8rem;
+    }
+  }
+
+
+
+  /* How SSI Technology Works Section */
+  .how-ssi-section {
+    position: relative;
+    overflow: hidden;
+    background-color: #f4f0e4;
+    border-top: 1px solid rgba(95,127,42,0.18);
+    border-bottom: 1px solid rgba(23,54,84,0.18);
+  }
+
+  .how-ssi-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image:
+      linear-gradient(180deg, rgba(244,240,228,0.20) 0%, rgba(244,240,228,0.10) 50%, rgba(233,239,220,0.16) 100%),
+      url("assets/how-ssi-background.png");
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    opacity: 1;
+    pointer-events: none;
+  }
+
+  .how-ssi-section > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .how-ssi-section h2 {
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+    color: #173654;
+    font-size: 2.15rem;
+    line-height: 1.12;
+  }
+
+  .how-intro {
+    max-width: 1180px;
+    margin: 0 auto 34px;
+    text-align: center;
+  }
+
+  .how-intro p {
+    max-width: 1120px;
+    margin: 0 auto 12px;
+    color: #203040;
+    font-size: 1.03rem;
+    line-height: 1.55;
+  }
+
+  .how-intro .how-highlight {
+    max-width: 1040px;
+    margin-top: 18px;
+    padding: 16px 24px;
+    border-left: 5px solid #5f7f2a;
+    background: rgba(229,236,218,0.72);
+    border-radius: 0 16px 16px 0;
+    color: #173654;
+    font-weight: 700;
+    box-shadow: 0 10px 22px rgba(16,38,61,0.04);
+  }
+
+  .how-pathway {
+    max-width: 1320px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 14px;
+    position: relative;
+  }
+
+  .how-pathway::before {
+    content: "";
+    position: absolute;
+    top: 34px;
+    left: 8%;
+    right: 8%;
+    height: 3px;
+    background: linear-gradient(90deg, rgba(95,127,42,0.18), rgba(23,54,84,0.34), rgba(95,127,42,0.18));
+    z-index: 0;
+  }
+
+  .how-step {
+    position: relative;
+    z-index: 1;
+    background: rgba(255,255,255,0.94);
+    border: 1px solid rgba(215,222,204,0.95);
+    border-radius: 18px;
+    padding: 18px 16px 20px;
+    box-shadow: 0 16px 30px rgba(16,38,61,0.09);
+    min-height: 205px;
+    backdrop-filter: blur(2px);
+  }
+
+  .step-number {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 14px;
+    background: #173654;
+    color: #ffffff;
+    font-size: 0.88rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    border: 4px solid #e9efdc;
+    box-shadow: 0 8px 18px rgba(16,38,61,0.16);
+  }
+
+  .how-step:nth-child(1) .step-number { background: #5f7f2a; }
+  .how-step:nth-child(2) .step-number { background: #8a5322; }
+  .how-step:nth-child(3) .step-number { background: #173654; }
+  .how-step:nth-child(4) .step-number { background: #7ea63a; }
+  .how-step:nth-child(5) .step-number { background: #c8a13b; color: #173654; }
+
+  .how-step h3 {
+    margin: 0 0 10px;
+    color: #173654;
+    font-size: 1.04rem;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .how-step p {
+    margin: 0;
+    color: #61707d;
+    font-size: 0.92rem;
+    line-height: 1.45;
+    text-align: center;
+  }
+
+  @media (max-width: 1120px) {
+    .how-pathway {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .how-pathway::before {
+      display: none;
+    }
+
+    .how-step:nth-child(5) {
+      grid-column: 1 / -1;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .how-pathway {
+      grid-template-columns: 1fr;
+    }
+
+    .how-step:nth-child(5) {
+      grid-column: auto;
+      max-width: none;
+    }
+
+    .how-ssi-section h2 {
+      font-size: 1.8rem;
+    }
+  }
+
+
+
+  /* The Science Behind SSI Section */
+  .science-section {
+    position: relative;
+    overflow: hidden;
+    background-color: #fffdf6;
+    border-top: 1px solid rgba(95,127,42,0.18);
+    border-bottom: 1px solid rgba(23,54,84,0.18);
+  }
+
+  .science-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image:
+      linear-gradient(180deg, rgba(255,253,246,0.18) 0%, rgba(255,253,246,0.08) 48%, rgba(244,240,228,0.14) 100%),
+      url("assets/science-background.png");
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    opacity: 1;
+    pointer-events: none;
+  }
+
+  .science-section > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .science-layout {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(340px, 0.65fr);
+    gap: 34px;
+    align-items: stretch;
+  }
+
+  .science-content {
+    background: rgba(255,255,255,0.68);
+    border: 1px solid rgba(215,222,204,0.88);
+    border-radius: 22px;
+    padding: 34px 36px;
+    box-shadow: 0 18px 36px rgba(16,38,61,0.07);
+    backdrop-filter: blur(2px);
+  }
+
+  .science-content .section-kicker {
+    text-align: left;
+  }
+
+  .science-content h2 {
+    text-align: left;
+    color: #173654;
+    margin: 0 0 20px;
+    font-size: 2.25rem;
+    line-height: 1.12;
+  }
+
+  .science-content p {
+    margin: 0 0 14px;
+    color: #203040;
+    font-size: 1.02rem;
+    line-height: 1.58;
+  }
+
+  .science-note {
+    margin-top: 24px;
+    padding: 22px 24px;
+    border-left: 5px solid #5f7f2a;
+    background: rgba(229,236,218,0.72);
+    border-radius: 0 16px 16px 0;
+    box-shadow: 0 10px 22px rgba(16,38,61,0.04);
+  }
+
+  .science-note h3 {
+    margin: 0 0 10px;
+    color: #173654;
+    font-size: 1.25rem;
+  }
+
+  .science-note p:last-child {
+    margin-bottom: 0;
+  }
+
+  .founder-card {
+    background: rgba(23,54,84,0.94);
+    color: #ffffff;
+    border-radius: 22px;
+    padding: 28px 26px;
+    box-shadow: 0 20px 40px rgba(16,38,61,0.18);
+    border: 1px solid rgba(255,255,255,0.12);
+    backdrop-filter: blur(2px);
+  }
+
+  .founder-card img {
+    width: 156px;
+    height: 156px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    border: 6px solid rgba(255,255,255,0.86);
+    box-shadow: 0 14px 26px rgba(0,0,0,0.18);
+  }
+
+  .founder-kicker {
+    color: #c8a13b;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .founder-card h3 {
+    color: #ffffff;
+    text-align: center;
+    margin: 0 0 8px;
+    font-size: 1.65rem;
+  }
+
+  .founder-title {
+    color: rgba(255,255,255,0.86) !important;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 18px !important;
+  }
+
+  .founder-card p {
+    color: rgba(255,255,255,0.88);
+    font-size: 0.96rem;
+    line-height: 1.52;
+    margin: 0 0 14px;
+  }
+
+  .founder-card blockquote {
+    margin: 20px 0 0;
+    padding: 18px 18px;
+    background: rgba(255,255,255,0.10);
+    border-left: 5px solid #c8a13b;
+    border-radius: 0 14px 14px 0;
+    color: #ffffff;
+    font-weight: 800;
+    line-height: 1.42;
+  }
+
+  @media (max-width: 980px) {
+    .science-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .science-content .section-kicker,
+    .science-content h2 {
+      text-align: center;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .science-content {
+      padding: 26px 20px;
+    }
+
+    .science-content h2 {
+      font-size: 1.8rem;
+    }
+  }
+
+
+
+
+  /* Frequently Asked Questions Section */
+  .faq-section {
+    position: relative;
+    overflow: hidden;
+    background-color: #fffdf6;
+    border-top: 1px solid rgba(95,127,42,0.18);
+    border-bottom: 1px solid rgba(23,54,84,0.18);
+  }
+
+  .faq-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image:
+      linear-gradient(180deg, rgba(255,253,246,0.12) 0%, rgba(255,253,246,0.08) 46%, rgba(244,240,228,0.08) 100%),
+      url("assets/faq-background.png");
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    opacity: 1;
+    pointer-events: none;
+  }
+
+  .faq-section > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .faq-header {
+    max-width: 980px;
+    margin: 0 auto 34px;
+    text-align: center;
+  }
+
+  .faq-header h2 {
+    color: #173654;
+    margin: 0 0 16px;
+    font-size: 2.35rem;
+    line-height: 1.12;
+  }
+
+  .faq-header p {
+    max-width: 880px;
+    margin: 0 auto;
+    color: #203040;
+    font-size: 1.04rem;
+    line-height: 1.58;
+  }
+
+  .faq-grid {
+    max-width: 1380px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    align-items: start;
+  }
+
+  .faq-column {
+    display: grid;
+    gap: 14px;
+  }
+
+  .faq-item {
+    background: rgba(255,255,255,0.94);
+    border: 1px solid rgba(215,222,204,0.95);
+    border-radius: 16px;
+    box-shadow: 0 14px 28px rgba(16,38,61,0.075);
+    overflow: hidden;
+    backdrop-filter: blur(2px);
+  }
+
+  .faq-item summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 18px 20px;
+    color: #173654;
+    font-weight: 800;
+    font-size: 0.96rem;
+    line-height: 1.18;
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: center;
+    white-space: nowrap;
+  }
+
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-item summary::after {
+    content: "+";
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #e5ecda;
+    color: #173654;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .faq-item[open] summary {
+    border-bottom: 1px solid rgba(215,222,204,0.85);
+  }
+
+  .faq-item[open] summary::after {
+    content: "–";
+    background: #5f7f2a;
+    color: #ffffff;
+  }
+
+  .faq-answer {
+    padding: 18px 22px 20px;
+    background: rgba(255,253,246,0.58);
+  }
+
+  .faq-answer p {
+    margin: 0 0 12px;
+    color: #61707d;
+    font-size: 0.98rem;
+    line-height: 1.55;
+  }
+
+  .faq-answer p:last-child {
+    margin-bottom: 0;
+  }
+
+  .faq-footer-note {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 16px 22px;
+    text-align: center;
+    border-left: 5px solid #5f7f2a;
+    background: rgba(229,236,218,0.78);
+    border-radius: 0 16px 16px 0;
+    color: #173654;
+    font-weight: 800;
+    box-shadow: 0 10px 22px rgba(16,38,61,0.05);
+    backdrop-filter: blur(2px);
+  }
+
+  @media (max-width: 900px) {
+    .faq-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .faq-header h2 {
+      font-size: 2rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .faq-header h2 {
+      font-size: 1.8rem;
+    }
+
+    .faq-item summary {
+      padding: 16px 18px;
+      white-space: normal;
+    }
+
+    .faq-answer {
+      padding: 16px 18px 18px;
+    }
+  }
+
+
+
+  /* CTA Pathway Section */
+  .cta-pathway-section {
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 16% 20%, rgba(143,207,196,0.18), transparent 28%),
+      radial-gradient(circle at 84% 72%, rgba(255,255,255,0.08), transparent 30%),
+      linear-gradient(180deg, #063f3b 0%, #022f2d 100%);
+    color: #ffffff;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    border-bottom: 1px solid rgba(255,255,255,0.10);
+    padding-bottom: 100px;
+  }
+
+  .cta-pathway-header {
+    max-width: 1040px;
+    margin: 0 auto 34px;
+    text-align: center;
+  }
+
+  .cta-pathway-header .section-kicker {
+    color: #c9ebe5;
+  }
+
+  .cta-pathway-header h2 {
+    color: #ffffff;
+    margin: 0 0 16px;
+    font-size: 2.35rem;
+    line-height: 1.12;
+  }
+
+  .cta-pathway-header p {
+    max-width: 880px;
+    margin: 0 auto;
+    color: rgba(255,255,255,0.86);
+    font-size: 1.05rem;
+    line-height: 1.58;
+  }
+
+  .cta-card-grid {
+    max-width: 1380px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+    align-items: stretch;
+  }
+
+  .cta-card {
+    background: rgba(255,255,255,0.94);
+    color: #203040;
+    border: 1px solid rgba(255,255,255,0.20);
+    border-radius: 20px;
+    padding: 22px 20px;
+    box-shadow: 0 16px 34px rgba(0,0,0,0.17);
+    min-height: 270px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cta-card:nth-child(1) {
+    border-top: 6px solid #5f7f2a;
+  }
+
+  .cta-card:nth-child(2) {
+    border-top: 6px solid #c8a13b;
+  }
+
+  .cta-card:nth-child(3) {
+    border-top: 6px solid #b84a3a;
+  }
+
+  .cta-card:nth-child(4) {
+    border-top: 6px solid #8a5322;
+  }
+
+  .cta-card.featured {
+    transform: none;
+  }
+
+  .cta-card-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    margin-bottom: 18px;
+    background: #e5ecda;
+    color: #173654;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+  }
+
+  .cta-card.featured .cta-card-icon {
+    background: #e5ecda;
+    color: #173654;
+  }
+
+  .cta-card h3 {
+    margin: 0 0 10px;
+    color: #173654;
+    font-size: 1.22rem;
+    line-height: 1.15;
+  }
+
+  .cta-card p {
+    margin: 0 0 18px;
+    color: #61707d;
+    font-size: 0.9rem;
+    line-height: 1.48;
+  }
+
+  .cta-card .btn {
+    margin-top: auto;
+  }
+
+  .cta-card .btn,
+  .cta-card .btn-secondary {
+    background: linear-gradient(180deg, #0f806f 0%, #0b6659 100%);
+    border: 2px solid #094f45;
+    color: #ffffff;
+    box-shadow: 0 8px 16px rgba(14,107,92,0.28), inset 0 1px 0 rgba(255,255,255,0.24);
+    transform: translateY(0);
+  }
+
+  .cta-card .btn:hover,
+  .cta-card .btn-secondary:hover {
+    background: linear-gradient(180deg, #11917e 0%, #0a5a4f 100%);
+    border-color: #073f37;
+    color: #ffffff;
+    box-shadow: 0 10px 20px rgba(14,107,92,0.34), inset 0 1px 0 rgba(255,255,255,0.28);
+    transform: translateY(-1px);
+  }
+
+  .cta-card .btn:active,
+  .cta-card .btn-secondary:active {
+    transform: translateY(1px);
+    box-shadow: 0 5px 10px rgba(14,107,92,0.24), inset 0 2px 3px rgba(0,0,0,0.12);
+  }
+
+  @media (max-width: 1100px) {
+    .cta-card-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      max-width: 860px;
+    }
+
+    .cta-card.featured {
+      transform: none;
+    }
+  }
+
+  @media (max-width: 680px) {
+    .cta-card-grid {
+      grid-template-columns: 1fr;
+      max-width: 620px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .cta-pathway-header h2 {
+      font-size: 1.85rem;
+    }
+
+    .cta-card {
+      padding: 24px 20px;
+    }
+  }
+
+
+
+  /* Partners Section */
+  .partners-section {
+    position: relative;
+    overflow: hidden;
+    background-color: #fcfaf4;
+    border-top: 1px solid rgba(95,127,42,0.18);
+    border-bottom: 1px solid rgba(23,54,84,0.15);
+  }
+
+  .partners-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image:
+      linear-gradient(180deg, rgba(252,250,244,0.14) 0%, rgba(252,250,244,0.08) 48%, rgba(244,240,228,0.10) 100%),
+      url("assets/partners-background.png");
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    opacity: 1;
+    pointer-events: none;
+  }
+
+  .partners-section > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .partners-header {
+    max-width: 980px;
+    margin: 0 auto 34px;
+    text-align: center;
+  }
+
+  .partners-header h2 {
+    color: #173654;
+    margin: 0 0 16px;
+    font-size: 2.35rem;
+    line-height: 1.12;
+  }
+
+  .partners-header p {
+    max-width: 920px;
+    margin: 0 auto;
+    color: #203040;
+    font-size: 1.04rem;
+    line-height: 1.6;
+  }
+
+  .partners-grid {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 26px;
+    align-items: stretch;
+  }
+
+  .partner-card {
+    background: rgba(255,255,255,0.96);
+    border: 1px solid rgba(215,222,204,0.92);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 42px rgba(16,38,61,0.10);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    backdrop-filter: blur(2px);
+  }
+
+  .partner-visual {
+    position: relative;
+    min-height: 220px;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+
+  .partner-visual::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(8,27,43,0.08) 0%, rgba(8,27,43,0.26) 100%);
+  }
+
+  .siri-visual {
+    background-image:
+      linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.05) 100%),
+      url("assets/siri-bg.png");
+    background-position: center center;
+  }
+
+  .pineedge-visual {
+    background-image:
+      linear-gradient(180deg, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.18) 100%),
+      url("assets/pineedge-bg.png");
+    background-position: center center;
+  }
+
+  .pineedge-visual .partner-logo-badge {
+    left: 18px;
+    top: 18px;
+  }
+
+  .partner-logo-badge {
+    position: absolute;
+    left: 24px;
+    top: 22px;
+    z-index: 1;
+    background: rgba(255,255,255,0.92);
+    border: 1px solid rgba(255,255,255,0.88);
+    border-radius: 18px;
+    padding: 12px 14px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+    max-width: 240px;
+  }
+
+  .partner-logo-badge img {
+    display: block;
+    max-width: 100%;
+    max-height: 86px;
+    height: auto;
+    width: auto;
+  }
+
+  .pineedge-card .partner-logo-badge {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+    max-width: 110px;
+  }
+
+  .pineedge-card .partner-logo-badge img {
+    max-height: 110px;
+  }
+
+  .partner-body {
+    padding: 24px 26px 28px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .partner-role {
+    display: inline-block;
+    margin-bottom: 10px;
+    color: #6b8e2f;
+    font-size: 0.84rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .partner-body h3 {
+    margin: 0 0 14px;
+    color: #173654;
+    font-size: 1.7rem;
+    line-height: 1.14;
+  }
+
+  .partner-body p {
+    margin: 0 0 14px;
+    color: #61707d;
+    font-size: 0.98rem;
+    line-height: 1.58;
+  }
+
+  .partner-body .btn {
+    margin-top: auto;
+    align-self: flex-start;
+  }
+
+  .partners-summary {
+    max-width: 1080px;
+    margin: 28px auto 0;
+    padding: 18px 22px;
+    text-align: center;
+    border-left: 5px solid #5f7f2a;
+    border-radius: 0 16px 16px 0;
+    background: rgba(229,236,218,0.78);
+    color: #173654;
+    font-weight: 800;
+    box-shadow: 0 10px 22px rgba(16,38,61,0.05);
+    backdrop-filter: blur(2px);
+  }
+
+  @media (max-width: 980px) {
+    .partners-grid {
+      grid-template-columns: 1fr;
+      max-width: 760px;
+    }
+
+    .partners-header h2 {
+      font-size: 2rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .partner-visual {
+      min-height: 180px;
+    }
+
+    .partner-logo-badge {
+      left: 16px;
+      top: 16px;
+      max-width: 190px;
+      padding: 10px 12px;
+    }
+
+    .pineedge-card .partner-logo-badge {
+      max-width: 88px;
+      padding: 0;
+    }
+
+    .partner-body {
+      padding: 22px 20px 24px;
+    }
+
+    .partners-header h2 {
+      font-size: 1.8rem;
+    }
+  }
+footer { text-align:center; padding:30px 20px; background:#f8fafd; font-size:0.875rem; color:#777; }
+
+  @media (max-width: 980px) {
+    .hero {
+      grid-template-columns: 1fr;
+      padding: 58px 24px;
+      gap: 34px;
+    }
+    .hero-image {
+      justify-self: start;
+      max-width: 560px;
+    }
+    .hero h1 {
+      font-size: 2.65rem;
+      white-space: normal;
+    }
+  }
+
+  /* Site Footer */
+  .site-footer {
+    background:
+      radial-gradient(circle at 18% 10%, rgba(143,207,196,0.14), transparent 26%),
+      linear-gradient(180deg, #063f3b 0%, #022f2d 100%);
+    color: #ffffff;
+    padding: 54px 40px 26px;
+    border-top: 1px solid rgba(255,255,255,0.12);
+  }
+
+  .footer-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(180px, 0.45fr) minmax(260px, 0.65fr);
+    gap: 38px;
+    align-items: start;
+  }
+
+  .footer-logo-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .footer-logo-row img {
+    width: 46px;
+    height: auto;
+  }
+
+  .footer-logo-row span {
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .footer-brand p,
+  .footer-enquiries p,
+  .acknowledgement p {
+    color: rgba(255,255,255,0.82);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .footer-links h3,
+  .footer-enquiries h3,
+  .acknowledgement h3 {
+    color: #c9ebe5;
+    margin: 0 0 14px;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footer-links a,
+  .footer-policy-links a {
+    color: rgba(255,255,255,0.82);
+    font-weight: 700;
+  }
+
+  .footer-links a:hover,
+  .footer-policy-links a:hover,
+  .footer-contact-link:hover {
+    color: #ffffff;
+  }
+
+  .footer-contact-link {
+    display: inline-block;
+    margin-top: 16px;
+    color: #ffffff;
+    font-weight: 800;
+    border-bottom: 2px solid #c9ebe5;
+    padding-bottom: 3px;
+  }
+
+  .acknowledgement {
+    max-width: 1280px;
+    margin: 38px auto 0;
+    padding: 22px 24px;
+    background: rgba(255,255,255,0.08);
+    border-left: 5px solid #8fcfc4;
+    border-radius: 0 16px 16px 0;
+  }
+
+  .footer-bottom {
+    max-width: 1280px;
+    margin: 28px auto 0;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.16);
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    color: rgba(255,255,255,0.66);
+    font-size: 0.92rem;
+  }
+
+  .footer-policy-links {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 900px) {
+    .footer-inner {
+      grid-template-columns: 1fr;
+    }
+
+    .footer-bottom {
+      flex-direction: column;
+    }
+  }
+
+
+
+  /* Header final polish override */
+  header .logo,
+  header .logo span {
+    color: #ffffff !important;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 800;
+    letter-spacing: 0.045em;
+    text-transform: uppercase;
+  }
+
+  header nav a:not(.btn) {
+    color: rgba(255,255,255,0.92) !important;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 700;
+  }
+
+  header nav a:not(.btn):hover {
+    color: #ffffff !important;
+  }
+
+  header nav .btn-primary {
+    color: #ffffff !important;
+  }
+
+  header nav .btn-secondary {
+    color: #063f3b !important;
+  }
+
+
+  /* Header alignment and spacing refinement */
+  header {
+    min-height: 82px;
+  }
+
+  header .logo {
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important;
+    line-height: 1 !important;
+  }
+
+  header .logo span {
+    display: inline-flex !important;
+    align-items: center !important;
+    line-height: 1.05 !important;
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+    font-size: 1.5rem !important;
+  }
+
+  header .logo img {
+    flex: 0 0 auto;
+    display: block;
+  }
+
+  header nav {
+    gap: 22px !important;
+    margin-left: auto;
+  }
+
+  header nav a:not(.btn) {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+    padding: 8px 0;
+  }
+
+  header nav .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 1180px) {
+    header {
+      align-items: flex-start;
+    }
+
+    header nav {
+      gap: 14px !important;
+    }
+  }
+
+
+  /* Header navigation clean layout fix */
+  header nav {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 18px !important;
+    flex-wrap: nowrap !important;
+    margin-left: auto !important;
+  }
+
+  header nav a:not(.btn) {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 8px 0 !important;
+    margin: 0 !important;
+    color: rgba(255,255,255,0.92) !important;
+    font-size: 0.94rem !important;
+    line-height: 1 !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+  }
+
+  header nav a:not(.btn)::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  header nav .btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 36px !important;
+    padding: 8px 14px !important;
+    margin: 0 !important;
+    border-radius: 12px !important;
+    font-size: 0.88rem !important;
+    line-height: 1 !important;
+    font-weight: 800 !important;
+    white-space: nowrap !important;
+    box-shadow: none !important;
+  }
+
+  header nav .btn-primary {
+    background: rgba(255,255,255,0.10) !important;
+    border: 1px solid rgba(201,235,229,0.58) !important;
+    color: #ffffff !important;
+  }
+
+  header nav .btn-primary:hover {
+    background: rgba(255,255,255,0.18) !important;
+    border-color: rgba(201,235,229,0.95) !important;
+  }
+
+  header nav .btn-secondary {
+    background: rgba(255,255,255,0.96) !important;
+    color: #063f3b !important;
+    border: 1px solid rgba(255,255,255,0.96) !important;
+  }
+
+  header nav .btn-secondary:hover {
+    background: #c9ebe5 !important;
+    color: #022f2d !important;
+    border-color: #c9ebe5 !important;
+  }
+
+  @media (max-width: 1280px) {
+    header {
+      gap: 18px;
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+
+    header nav {
+      gap: 12px !important;
+    }
+
+    header nav a:not(.btn) {
+      font-size: 0.86rem !important;
+    }
+
+    header nav .btn {
+      font-size: 0.82rem !important;
+      padding: 8px 11px !important;
+    }
+  }
+
+  @media (max-width: 1060px) {
+    header {
+      align-items: flex-start !important;
+      flex-direction: column !important;
+    }
+
+    header nav {
+      justify-content: flex-start !important;
+      flex-wrap: wrap !important;
+      margin-left: 0 !important;
+      gap: 12px !important;
+    }
+  }
+
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="logo">
+    <img src="assets/logo-ssi.png" alt="SSI Logo" style="height:54px; width:auto;">
+    <span>SUSTAINABLE SOIL INTELLIGENCE</span>
+  </div>
+  <nav>
+    <a href="#">Solutions</a>
+    <a href="#">Products</a>
+    <a href="#">Resources</a>
+    <a href="#">About</a>
+    <a href="#">Contact</a>
+    <a href="#" class="btn btn-primary">Become a Distributor</a>
+    <a href="#" class="btn btn-primary">Explore Products</a>
+    <a href="#" class="btn btn-secondary">Log In</a>
+  </nav>
+</header>
+
+<!-- Hero Section -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-text">
+    <h3>SOIL INTELLIGENCE. NEW SCIENCE. LIVING SYSTEMS.</h3>
+    <h1>SSI Technology is a soil intelligence activator.</h1>
+    <p>
+      SSI Technology is a science-backed soil intelligence activator designed to support the living biological systems — where root-zone biology, microbial activity, mycelium pathways, carbon systems and plant signalling interact.
+    </p>
+    <p>
+      Built from proven biological science, SSI Technology brings a new operating model to soil performance — supporting the living systems that drive resilience, productivity and long-term land value.
+    </p>
+    <p class="hero-final-line">
+      For landowners, growers and regional partners looking beyond input-based agriculture toward stronger living soil systems.
+    </p>
+  </div>
+  <div class="hero-image">
+    <img src="assets/hero-farm.jpg" alt="Aerial farm view">
+  </div>
+</section>
+
+<!-- Soil Intelligence Explainer Section -->
+<section class="section soil-intelligence-section" id="soil-intelligence">
+  <div class="section-kicker">A DIFFERENT AGRICULTURAL PARADIGM</div>
+  <h2>Activating the living soil system beneath the plant</h2>
+
+  <div class="soil-intro">
+    <p>
+      SSI Technology is designed to work where soil performance begins — below the surface, in the living interaction zone between plant roots, microbes, fungi, carbon systems and water movement.
+    </p>
+    <p>
+      Rather than viewing soil as a static input problem, SSI Technology supports the biological systems that allow soil to communicate, cycle nutrients, build structure, respond to stress and support plant resilience.
+    </p>
+    <p class="soil-bridge">
+      This is the foundation of Soil Intelligence: understanding soil as a living biological network, then supporting the natural systems that drive long-term land performance.
+    </p>
+  </div>
+
+  <div class="soil-card-grid">
+    <article class="soil-card">
+      <div class="soil-icon">🌱</div>
+      <h3>Rhizosphere biology</h3>
+      <p>The root-zone interaction area where plant roots, soil biology and microbial systems continuously exchange signals and activity.</p>
+    </article>
+
+    <article class="soil-card">
+      <div class="soil-icon">🧬</div>
+      <h3>Microbial diversity</h3>
+      <p>A broader and more active biological community helps support nutrient cycling, soil function and biological balance.</p>
+    </article>
+
+    <article class="soil-card">
+      <div class="soil-icon">🕸️</div>
+      <h3>Mycelium pathways</h3>
+      <p>Fungal networks help connect biological activity through the soil and support below-ground interaction.</p>
+    </article>
+
+    <article class="soil-card">
+      <div class="soil-icon">◌</div>
+      <h3>Carbon interaction</h3>
+      <p>Carbon supports biological energy, soil structure and the relationship between plant growth and microbial activity.</p>
+    </article>
+
+    <article class="soil-card">
+      <div class="soil-icon">↔</div>
+      <h3>Biological signalling</h3>
+      <p>Plants, microbes and soil organisms communicate through natural biological signals that influence growth, response and resilience.</p>
+    </article>
+
+    <article class="soil-card">
+      <div class="soil-icon">🌾</div>
+      <h3>Plant resilience</h3>
+      <p>A stronger living soil system can help plants better respond to stress, changing conditions and environmental pressure.</p>
+    </article>
+
+    <article class="soil-card">
+      <div class="soil-icon">♻</div>
+      <h3>Regenerative soil function</h3>
+      <p>The long-term goal is soil that becomes more biologically active, more resilient and more productive over time.</p>
+    </article>
+  </div>
+</section>
+
+<!-- How SSI Technology Works Section -->
+<section class="section how-ssi-section" id="how-ssi-works">
+  <div class="section-kicker">HOW SSI TECHNOLOGY WORKS</div>
+  <h2>From biological activation to soil intelligence</h2>
+
+  <div class="how-intro">
+    <p>
+      SSI Technology works within the living soil environment, with its primary area of action around the plant rhizosphere — the root-zone where plant roots, soil biology, bacteria, fungi, carbon systems and biological signalling interact.
+    </p>
+    <p>
+      The technology is designed to support positive biological activation in this zone, helping the soil system become more responsive, more communicative and more capable of supporting resilient plant growth and long-term land performance.
+    </p>
+    <p class="how-highlight">
+      SSI Technology is focused on supporting the conditions and pathways that allow beneficial biological activity to organise, communicate and function more effectively.
+    </p>
+  </div>
+
+  <div class="how-pathway">
+    <article class="how-step">
+      <div class="step-number">01</div>
+      <h3>Biological activation</h3>
+      <p>Activates and supports beneficial biological activity within the living soil environment.</p>
+    </article>
+
+    <article class="how-step">
+      <div class="step-number">02</div>
+      <h3>Rhizosphere response</h3>
+      <p>Targets the root-zone where plant roots, soil biology and microbial systems interact.</p>
+    </article>
+
+    <article class="how-step">
+      <div class="step-number">03</div>
+      <h3>Communication pathways</h3>
+      <p>Supports communication between soil biology, microbial systems and plant roots.</p>
+    </article>
+
+    <article class="how-step">
+      <div class="step-number">04</div>
+      <h3>Energy and biological function</h3>
+      <p>Supports the biological energy conditions required for active soil function.</p>
+    </article>
+
+    <article class="how-step">
+      <div class="step-number">05</div>
+      <h3>Plant and land performance</h3>
+      <p>Supports stronger plant resilience, soil function and long-term land performance.</p>
+    </article>
+  </div>
+</section>
+
+<!-- The Science Behind SSI Section -->
+<section class="section science-section" id="science-behind-ssi">
+  <div class="science-layout">
+    <div class="science-content">
+      <div class="section-kicker">THE SCIENCE BEHIND SSI</div>
+      <h2>Where biology, energy and soil intelligence connect</h2>
+
+      <p>
+        SSI Technology is informed by a deeper understanding of soil as a living biological network. Developed through Norman Olsen’s long-term work in soil microbiology and biological soil systems, SSI is built around the principle that soil intelligence is influenced by biological communication, energy exchange, microbial activity, mycelium pathways and the interaction between plant roots and soil organisms.
+      </p>
+
+      <p>
+        The science behind SSI draws on areas such as quantum biology, ADP / ATP energy conversion, biological signalling, quorum sensing, biofilm behaviour and the rhizosphere as the primary interaction zone between plant and soil life.
+      </p>
+
+      <p>
+        The science is complex, but the purpose is practical: to support living soil systems so landowners, growers and regional partners can build stronger, more resilient and more productive country over time.
+      </p>
+
+      <div class="science-note">
+        <h3>Science-backed, but practical in purpose</h3>
+        <p>
+          SSI Technology is not presented as theory alone. It is an applied biological technology platform developed to support practical soil activation, biological communication and long-term land performance.
+        </p>
+        <p>
+          Its purpose is to help landowners and growers work with the biological systems beneath the plant — supporting stronger living soils, more resilient production systems and better long-term farm economics.
+        </p>
+      </div>
+    </div>
+
+    <aside class="founder-card">
+      <img src="assets/team-norman.png" alt="Norman Olsen">
+      <div class="founder-kicker">LEAD SCIENTIST &amp; FOUNDER</div>
+      <h3>Norman Olsen</h3>
+      <p class="founder-title">Soil Microbiologist and Researcher · Founder of SSI Technology</p>
+      <p>
+        Norman Olsen is the founder and scientific lead behind SSI Technology. His work has focused on the study of bacilli bacterium within the plant rhizosphere and the development of biological programs that support beneficial soil activity and target soil disease pressures affecting agriculture.
+      </p>
+      <p>
+        Over more than 20 years, Norman has developed Sustainable Soil Intelligence Technology to support the activation and enhancement of soil biota, with a particular focus on the communication network between soil biology and the plant root system.
+      </p>
+      <blockquote>
+        “We are not a soil conditioner. We are a soil intelligence activator.”
+      </blockquote>
+    </aside>
+  </div>
+</section>
+
+<!-- Frequently Asked Questions Section -->
+<section class="section faq-section" id="frequently-asked-questions">
+  <div class="faq-header">
+    <div class="section-kicker">FREQUENTLY ASKED QUESTIONS</div>
+    <h2>Understanding SSI Technology</h2>
+    <p>
+      SSI Technology is built on advanced biological science and practical soil system knowledge. These questions explain the key principles behind soil intelligence, biological activation and the role SSI plays in supporting living soil performance.
+    </p>
+  </div>
+
+  <div class="faq-grid">
+    <div class="faq-column">
+      <details class="faq-item">
+        <summary>1. What is SSI Technology?</summary>
+        <div class="faq-answer">
+          <p>SSI Technology is a soil intelligence activator designed to support the living biological systems beneath the plant. It works around the rhizosphere — the root-zone where plant roots, soil biology, bacteria, fungi and biological signalling interact.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>2. Why is the rhizosphere so important?</summary>
+        <div class="faq-answer">
+          <p>The rhizosphere is the primary interaction zone between plant roots and soil life. It is where microbial activity, nutrient cycling, biological signalling and plant response are most active.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>3. Why are bacteria important in soil?</summary>
+        <div class="faq-answer">
+          <p>Bacteria are part of the living biological community that helps soil function. In the SSI framework, beneficial bacteria are important because they influence biological activity, communication pathways, soil response and the plant root environment.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>4. What is biological activation?</summary>
+        <div class="faq-answer">
+          <p>Biological activation means supporting the conditions that allow beneficial soil biology to become active, organised and functional. SSI Technology is designed to help biological species respond positively within the soil environment rather than simply adding another input.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="faq-column">
+      <details class="faq-item">
+        <summary>5. What does quantum biology have to do with SSI Technology?</summary>
+        <div class="faq-answer">
+          <p>Quantum biology helps explain how energy exchange, biological signalling and molecular interaction can influence living systems, including soil biology.</p>
+          <p>SSI Technology is not claiming soil is “magic”. It is recognising that living soil systems operate through complex biological and energy-based interactions that conventional input-based agriculture often does not fully address.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>6. Why does SSI talk about ADP and ATP?</summary>
+        <div class="faq-answer">
+          <p>ADP and ATP relate to biological energy transfer. SSI uses this language because living soil systems require energy conditions that allow biology to function, communicate and support plant response.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>7. Why are biological products and bio-stimulants used together?</summary>
+        <div class="faq-answer">
+          <p>They support both the biological organisms in the soil and the conditions that help those organisms perform. In simple terms, the biology matters — but so does the environment that allows that biology to activate, communicate and function.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>8. Is SSI Technology proven or still in R&amp;D?</summary>
+        <div class="faq-answer">
+          <p>SSI Technology is not early-stage R&amp;D. It is an applied biological technology platform developed for practical agricultural use and already distributed across markets including Australia, New Zealand and China.</p>
+          <p>The technology is designed to support real-world soil activation, biological communication and long-term land performance — helping landowners and growers work with the living systems beneath the plant.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <div class="faq-footer-note">
+    For more detailed information on the science and technology behind SSI, please contact us.
+  </div>
+</section>
+
+<!-- CTA Pathway Section -->
+<section class="section cta-pathway-section" id="ssi-pathways">
+  <div class="cta-pathway-header">
+    <div class="section-kicker">START YOUR SSI TECHNOLOGY PATHWAY</div>
+    <h2>Explore products. Open new territories. Support existing distributors.</h2>
+    <p>
+      Whether you are exploring SSI Technology for your land, interested in representing SSI in a new territory, or already working with SSI as an approved distributor, the pathways below provide the next step.
+    </p>
+  </div>
+
+  <div class="cta-card-grid">
+    <article class="cta-card">
+      <div class="cta-card-icon">01</div>
+      <h3>View the Product Range</h3>
+      <p>
+        Explore the SSI Technology product range and understand how each product supports biological activation, soil intelligence and practical land performance.
+      </p>
+      <a href="#product-range-link" class="btn btn-primary">Explore Products</a>
+    </article>
+
+    <article class="cta-card featured">
+      <div class="cta-card-icon">02</div>
+      <h3>Work With Us</h3>
+      <p>
+        SSI Technology is expanding through approved regional partners and distribution pathways. If you are interested in supporting a new territory or representing SSI products, start the conversation here.
+      </p>
+      <a href="#distributor-enquiry-link" class="btn btn-primary">Become a Distributor</a>
+    </article>
+
+    <article class="cta-card">
+      <div class="cta-card-icon">03</div>
+      <h3>Distributor Login</h3>
+      <p>
+        Existing distributors can access the marketplace pathway for ordering, product information and account-based distributor support.
+      </p>
+      <a href="#distributor-login-link" class="btn btn-primary">Distributor Login</a>
+    </article>
+
+    <article class="cta-card">
+      <div class="cta-card-icon">04</div>
+      <h3>General Enquiries</h3>
+      <p>
+        For general questions about SSI Technology, product suitability, regional availability or the next step for your land or organisation, contact the SSI team.
+      </p>
+      <a href="#general-enquiries-link" class="btn btn-primary">Contact Us</a>
+    </article>
+  </div>
+</section>
+
+
+<!-- Partners Section -->
+<section class="section partners-section" id="our-partners">
+  <div class="partners-header">
+    <div class="section-kicker">OUR PARTNERS</div>
+    <h2>Supporting science, stewardship and market access</h2>
+    <p>
+      SSI Technology operates within a broader ecosystem of partners that support its scientific purpose, regenerative mission and commercial pathways.
+      Together, SIRI and PineEdge help connect soil intelligence with education, environmental stewardship, product access and practical market engagement.
+    </p>
+  </div>
+
+  <div class="partners-grid">
+    <article class="partner-card siri-card">
+      <div class="partner-visual siri-visual">
+        <div class="partner-logo-badge">
+          <img src="assets/siri-logo.png" alt="Soil Intelligence Regenerative Institute logo">
+        </div>
+      </div>
+      <div class="partner-body">
+        <div class="partner-role">Research · Education · Environmental Stewardship</div>
+        <h3>Soil Intelligence Regenerative Institute</h3>
+        <p>
+          The Soil Intelligence Regenerative Institute is a charitable organisation dedicated to advancing sustainable agricultural practices and promoting environmental stewardship through research and development, education, community engagement and direct projects.
+        </p>
+        <p>
+          SIRI’s purpose includes the protection and restoration of soil intelligence, ecosystem health, biodiversity, water quality and food quality — helping individuals, farmers, landowners and communities contribute to healthier and more sustainable agricultural systems.
+        </p>
+        <a href="https://siri.org.au/" class="btn btn-primary">Visit SIRI</a>
+      </div>
+    </article>
+
+    <article class="partner-card pineedge-card">
+      <div class="partner-visual pineedge-visual">
+        <div class="partner-logo-badge">
+          <img src="assets/pineedge-logo.png" alt="PineEdge logo">
+        </div>
+      </div>
+      <div class="partner-body">
+        <div class="partner-role">Marketplace Infrastructure · Product Access · Distributor Pathways</div>
+        <h3>PineEdge</h3>
+        <p>
+          PineEdge provides the marketplace infrastructure supporting SSI product discovery, distributor engagement and buyer–seller pathways.
+        </p>
+        <p>
+          PineEdge brings structure to markets that have historically relied on fragmented networks and manual processes. It supports compliant trade execution, clearer market participation and faster buyer–seller engagement — without changing how industry works, just making it work better.
+        </p>
+        <a href="https://pineedge.com.au/" class="btn btn-primary">Visit PineEdge</a>
+      </div>
+    </article>
+  </div>
+
+  <div class="partners-summary">
+    Together, these partnerships support SSI’s broader mission: advancing soil intelligence through science, education, stewardship and practical market access.
+  </div>
+</section>
+
+
+<!-- Add more as needed -->
+
+
+<!-- Footer -->
+<footer class="site-footer" id="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo-row">
+        <img src="assets/logo-ssi.png" alt="SSI Logo">
+        <span>Sustainable Soil Intelligence</span>
+      </div>
+      <p>
+        Science-backed soil intelligence technology for living soil systems, regenerative land performance and long-term agricultural resilience.
+      </p>
+    </div>
+
+    <div class="footer-links">
+      <h3>Pathways</h3>
+      <a href="#soil-intelligence">Technology</a>
+      <a href="#product-range-link">Product Range</a>
+      <a href="#distributor-enquiry-link">Work With Us</a>
+      <a href="#distributor-login-link">Distributor Login</a>
+      <a href="#general-enquiries-link">Contact</a>
+    </div>
+
+    <div class="footer-enquiries">
+      <h3>Enquiries</h3>
+      <p>
+        For product, distributor or technical enquiries, please contact the SSI team.
+      </p>
+      <a href="#general-enquiries-link" class="footer-contact-link">Contact Us</a>
+    </div>
+  </div>
+
+  <div class="acknowledgement">
+    <h3>Acknowledgement of Country</h3>
+    <p>
+      SSI Technology acknowledges Aboriginal and Torres Strait Islander peoples as the Traditional Custodians of Country across Australia. We recognise their continuing connection to land, waters, soil, plants, animals and community, and pay our respects to Elders past and present.
+    </p>
+  </div>
+
+  <div class="footer-bottom">
+    <span>&copy; 2026 Sustainable Soil Intelligence. All rights reserved.</span>
+    <span class="footer-policy-links">
+      <a href="#privacy-policy-link">Privacy Policy</a>
+      <a href="#terms-link">Terms of Use</a>
+    </span>
+  </div>
+</footer>
+
+</body>
+</html>
